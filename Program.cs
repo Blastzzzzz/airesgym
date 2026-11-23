@@ -31,6 +31,9 @@ public class Program
             Console.WriteLine("3. Cambiar estado de un socio");
             Console.WriteLine("4. Modificar socio");
             Console.WriteLine("5. Listar planes");
+            Console.WriteLine("6. Vender membresía");
+            Console.WriteLine("7. Membresías por vencer");
+            Console.WriteLine("8. Membresías vencidas");
             Console.WriteLine("0. Salir");
             Console.Write("Opción: ");
             string opcion = Console.ReadLine();
@@ -47,6 +50,12 @@ public class Program
                     ModificarSocio();
                 else if (opcion == "5")
                     ListarPlanes();      
+                else if (opcion == "6")
+                    VenderMembresia();
+                else if (opcion == "7")
+                    ListarPorVencer();
+                else if (opcion == "8")
+                    ListarVencidas();
                 else if (opcion == "0")
                     seguir = false;
                 else
@@ -118,6 +127,103 @@ public class Program
         {
             Console.WriteLine(p.Nombre + " | $" + p.PrecioBase.ToString("N0") +
                               " | termina: " + p.CalcularTermino(DateTime.Now).ToString("dd/MM/yyyy"));
+        }
+    }
+        static void VenderMembresia()
+    {
+        Console.Write("RUT del socio: ");
+        string rut = Console.ReadLine();
+
+        SocioLogica socioLogica = new SocioLogica();
+        Socio socio = socioLogica.Buscar(rut);
+
+        if (socio == null)
+        {
+            Console.WriteLine("No existe un socio con ese RUT. Puede registrarlo con la opción 1.");
+            return;
+        }
+        Console.WriteLine("Socio: " + socio.Nombre + " (" + socio.Estado + ")");
+        
+                PlanLogica planLogica = new PlanLogica();
+        List<Plan> planes = planLogica.Listar();
+
+        for (int i = 0; i < planes.Count; i++)
+        {
+            Console.WriteLine((i + 1) + ". " + planes[i].Nombre + " - $" + planes[i].PrecioBase.ToString("N0"));
+        }
+
+        Console.Write("Número de plan: ");
+        int numPlan;
+        if (!int.TryParse(Console.ReadLine(), out numPlan) || numPlan < 1 || numPlan > planes.Count)
+        {
+            Console.WriteLine("Plan no válido.");
+            return;
+        }
+        Plan plan = planes[numPlan - 1];
+                for (int i = 0; i < MembresiaLogica.MetodosPago.Length; i++)
+        {
+            Console.WriteLine((i + 1) + ". " + MembresiaLogica.MetodosPago[i]);
+        }
+
+        Console.Write("Método de pago: ");
+        int numMetodo;
+        if (!int.TryParse(Console.ReadLine(), out numMetodo) || numMetodo < 1 || numMetodo > MembresiaLogica.MetodosPago.Length)
+        {
+            Console.WriteLine("Método de pago no válido.");
+            return;
+        }
+        string metodo = MembresiaLogica.MetodosPago[numMetodo - 1];
+
+                Console.WriteLine("Plan: " + plan.Nombre);
+        Console.WriteLine("Monto a pagar: $" + plan.PrecioBase.ToString("N0"));
+        Console.WriteLine("Termina: " + plan.CalcularTermino(DateTime.Now).ToString("dd/MM/yyyy HH:mm"));
+        Console.Write("¿Confirmar la venta? (s/n): ");
+        string respuesta = Console.ReadLine();
+
+        if (respuesta != "s")
+        {
+            Console.WriteLine("Venta cancelada.");
+            return;
+        }
+
+        MembresiaLogica membresiaLogica = new MembresiaLogica();
+        membresiaLogica.Vender(socio, plan, usuario, metodo);
+        Console.WriteLine("Venta registrada correctamente.");
+    }
+        static void ListarPorVencer()
+    {
+        MembresiaLogica logica = new MembresiaLogica();
+        List<Membresia> lista = logica.ListarPorVencer();
+
+        if (lista.Count == 0)
+        {
+            Console.WriteLine("No hay membresías por vencer.");
+            return;
+        }
+
+        foreach (Membresia m in lista)
+        {
+            Console.WriteLine(m.NombreSocio + " | " + m.RutSocio + " | " + m.NombrePlan +
+                              " | termina " + m.FechaTermino.ToString("dd/MM/yyyy") +
+                              " | faltan " + m.DiasRestantes() + " día(s)");
+        }
+    }
+        static void ListarVencidas()
+    {
+        MembresiaLogica logica = new MembresiaLogica();
+        List<Membresia> lista = logica.ListarVencidas();
+
+        if (lista.Count == 0)
+        {
+            Console.WriteLine("No hay membresías vencidas.");
+            return;
+        }
+
+        foreach (Membresia m in lista)
+        {
+            Console.WriteLine(m.NombreSocio + " | " + m.RutSocio + " | " + m.NombrePlan +
+                              " | terminó " + m.FechaTermino.ToString("dd/MM/yyyy") +
+                              " | hace " + m.DiasDesdeVencimiento() + " día(s)");
         }
     }
 }

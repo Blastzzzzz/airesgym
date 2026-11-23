@@ -80,4 +80,22 @@ public class Empleado
     {
         return (FechaTermino.Date - DateTime.Today).Days;
     }
+        public string NombreSocio { get; set; }
+    public string RutSocio { get; set; }
+    public string NombrePlan { get; set; }
+
+    public bool EstaVencida()
+    {
+        return FechaTermino.Date < DateTime.Today;
+    }
+
+    public bool EstaPorVencer()
+    {
+        return EstaVigente() && DiasRestantes() <= 7;
+    }
+
+    public int DiasDesdeVencimiento()
+    {
+        return (DateTime.Today - FechaTermino.Date).Days;
+    }
 }

@@ -29,4 +29,13 @@ public class MembresiaLogica
         datos.Insertar(m);
         return m;
     }
+        public List<Membresia> ListarPorVencer()
+    {
+        return datos.ListarPorVencer(DateTime.Today, DateTime.Today.AddDays(7));
+    }
+
+    public List<Membresia> ListarVencidas()
+    {
+        return datos.ListarVencidas(DateTime.Today);
+    }
 }
