@@ -38,4 +38,8 @@ public class MembresiaLogica
     {
         return datos.ListarVencidas(DateTime.Today);
     }
+        public List<Membresia> ObtenerHistorial(int idSocio)
+    {
+        return datos.ListarPorSocio(idSocio);
+    }
 }

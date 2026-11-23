@@ -34,6 +34,7 @@ public class Program
             Console.WriteLine("6. Vender membresía");
             Console.WriteLine("7. Membresías por vencer");
             Console.WriteLine("8. Membresías vencidas");
+            Console.WriteLine("9. Historial de un socio");
             Console.WriteLine("0. Salir");
             Console.Write("Opción: ");
             string opcion = Console.ReadLine();
@@ -56,6 +57,8 @@ public class Program
                     ListarPorVencer();
                 else if (opcion == "8")
                     ListarVencidas();
+                else if (opcion == "9")
+                    VerHistorial();
                 else if (opcion == "0")
                     seguir = false;
                 else
@@ -224,6 +227,44 @@ public class Program
             Console.WriteLine(m.NombreSocio + " | " + m.RutSocio + " | " + m.NombrePlan +
                               " | terminó " + m.FechaTermino.ToString("dd/MM/yyyy") +
                               " | hace " + m.DiasDesdeVencimiento() + " día(s)");
+        }
+    }
+        static void VerHistorial()
+    {
+        Console.Write("RUT del socio: ");
+        string rut = Console.ReadLine();
+
+        SocioLogica socioLogica = new SocioLogica();
+        Socio socio = socioLogica.Buscar(rut);
+
+        if (socio == null)
+        {
+            Console.WriteLine("No existe un socio con ese RUT.");
+            return;
+        }
+
+        MembresiaLogica membresiaLogica = new MembresiaLogica();
+        List<Membresia> historial = membresiaLogica.ObtenerHistorial(socio.IdSocio);
+
+        Console.WriteLine("Historial de " + socio.Nombre);
+
+        if (historial.Count == 0)
+        {
+            Console.WriteLine("Este socio no tiene membresías.");
+            return;
+        }
+
+        foreach (Membresia m in historial)
+        {
+            string estado;
+            if (m.EstaVigente())
+                estado = "Vigente";
+            else
+                estado = "Vencida";
+
+            Console.WriteLine(m.NombrePlan + " | " + m.FechaInicio.ToString("dd/MM/yyyy") +
+                              " al " + m.FechaTermino.ToString("dd/MM/yyyy") +
+                              " | $" + m.MontoPagado.ToString("N0") + " | " + estado);
         }
     }
 }

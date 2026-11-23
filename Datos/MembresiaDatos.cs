@@ -72,6 +72,23 @@ public class MembresiaDatos
         }
         return lista;
     }
+        public List<Membresia> ListarPorSocio(int idSocio)
+    {
+        List<Membresia> lista = new List<Membresia>();
+
+        using (MySqlConnection conexion = new MySqlConnection(cadena))
+        {
+            conexion.Open();
+
+            string sql = consultaBase +
+                         "WHERE m.id_socio = @idSocio " +
+                         "ORDER BY m.fecha_inicio DESC";
+            MySqlCommand comando = new MySqlCommand(sql, conexion);
+            comando.Parameters.AddWithValue("@idSocio", idSocio);
+            lista = LeerMembresias(comando);
+        }
+        return lista;
+    }
         private List<Membresia> LeerMembresias(MySqlCommand comando)
     {
         List<Membresia> lista = new List<Membresia>();
