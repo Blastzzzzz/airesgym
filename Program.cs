@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 public class Program
 
@@ -35,6 +35,7 @@ public class Program
             Console.WriteLine("7. Membresías por vencer");
             Console.WriteLine("8. Membresías vencidas");
             Console.WriteLine("9. Historial de un socio");
+            Console.WriteLine("10. Reporte de ingresos mensual");
             Console.WriteLine("0. Salir");
             Console.Write("Opción: ");
             string opcion = Console.ReadLine();
@@ -59,6 +60,8 @@ public class Program
                     ListarVencidas();
                 else if (opcion == "9")
                     VerHistorial();
+                else if (opcion == "10")
+                    VerReporteIngresos();
                 else if (opcion == "0")
                     seguir = false;
                 else
@@ -266,5 +269,49 @@ public class Program
                               " al " + m.FechaTermino.ToString("dd/MM/yyyy") +
                               " | $" + m.MontoPagado.ToString("N0") + " | " + estado);
         }
+    }
+    static void VerReporteIngresos()
+    {
+        if (!usuario.EsDueno)
+        {
+            Console.WriteLine("Esta opción es solo para el dueño.");
+            return;
+        }
+
+        Console.Write("Año (ej: 2026): ");
+        int anio;
+        if (!int.TryParse(Console.ReadLine(), out anio))
+        {
+            Console.WriteLine("Año no válido.");
+            return;
+        }
+
+        Console.Write("Mes (1-12): ");
+        int mes;
+        if (!int.TryParse(Console.ReadLine(), out mes))
+        {
+            Console.WriteLine("Mes no válido.");
+            return;
+        }
+
+        MembresiaLogica logica = new MembresiaLogica();
+        List<Membresia> ventas = logica.ObtenerVentasDelMes(anio, mes);
+
+        if (ventas.Count == 0)
+        {
+            Console.WriteLine("No hay ventas en ese mes.");
+            return;
+        }
+
+        decimal total = 0;
+        foreach (Membresia m in ventas)
+        {
+            Console.WriteLine(m.FechaInicio.ToString("dd/MM/yyyy") + " | " + m.NombreSocio +
+                              " | " + m.NombrePlan + " | $" + m.MontoPagado.ToString("N0"));
+            total = total + m.MontoPagado;
+        }
+
+        Console.WriteLine("Cantidad de ventas: " + ventas.Count);
+        Console.WriteLine("TOTAL DEL MES: $" + total.ToString("N0"));
     }
 }

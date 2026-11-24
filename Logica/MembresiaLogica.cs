@@ -42,4 +42,14 @@ public class MembresiaLogica
     {
         return datos.ListarPorSocio(idSocio);
     }
+    public List<Membresia> ObtenerVentasDelMes(int anio, int mes)
+    {
+        if (mes < 1 || mes > 12)
+            throw new Exception("El mes debe estar entre 1 y 12.");
+
+        if (anio < 2000 || anio > 2100)
+            throw new Exception("El año no es válido.");
+
+        return datos.ListarDelMes(anio, mes);
+    }
 }

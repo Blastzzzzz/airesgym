@@ -89,6 +89,24 @@ public class MembresiaDatos
         }
         return lista;
     }
+    public List<Membresia> ListarDelMes(int anio, int mes)
+    {
+        List<Membresia> lista = new List<Membresia>();
+
+        using (MySqlConnection conexion = new MySqlConnection(cadena))
+        {
+            conexion.Open();
+
+            string sql = consultaBase +
+                         "WHERE YEAR(m.fecha_inicio) = @anio AND MONTH(m.fecha_inicio) = @mes " +
+                         "ORDER BY m.fecha_inicio";
+            MySqlCommand comando = new MySqlCommand(sql, conexion);
+            comando.Parameters.AddWithValue("@anio", anio);
+            comando.Parameters.AddWithValue("@mes", mes);
+            lista = LeerMembresias(comando);
+        }
+        return lista;
+    }
         private List<Membresia> LeerMembresias(MySqlCommand comando)
     {
         List<Membresia> lista = new List<Membresia>();
