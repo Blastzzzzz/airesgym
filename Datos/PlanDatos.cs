@@ -46,4 +46,48 @@ public class PlanDatos
 
         return lista;
     }
+        public void Insertar(Plan plan)
+    {
+        using (MySqlConnection conexion = new MySqlConnection(cadena))
+        {
+            conexion.Open();
+            MySqlTransaction transaccion = conexion.BeginTransaction();
+
+            try
+            {
+                string sqlPlan = "INSERT INTO plan (nombre, precio_base) VALUES (@nombre, @precio)";
+                MySqlCommand cmdPlan = new MySqlCommand(sqlPlan, conexion, transaccion);
+                cmdPlan.Parameters.AddWithValue("@nombre", plan.Nombre);
+                cmdPlan.Parameters.AddWithValue("@precio", plan.PrecioBase);
+                cmdPlan.ExecuteNonQuery();
+                long idNuevo = cmdPlan.LastInsertedId;
+
+                if (plan is PlanDiario)
+                {
+                    PlanDiario diario = (PlanDiario)plan;
+                    string sql = "INSERT INTO plan_diario (id_plan, horas_validez) VALUES (@id, @horas)";
+                    MySqlCommand cmd = new MySqlCommand(sql, conexion, transaccion);
+                    cmd.Parameters.AddWithValue("@id", idNuevo);
+                    cmd.Parameters.AddWithValue("@horas", diario.HorasValidez);
+                    cmd.ExecuteNonQuery();
+                }
+                else
+                {
+                    PlanPorMes mensual = (PlanPorMes)plan;
+                    string sql = "INSERT INTO plan_por_mes (id_plan, cantidad_meses) VALUES (@id, @meses)";
+                    MySqlCommand cmd = new MySqlCommand(sql, conexion, transaccion);
+                    cmd.Parameters.AddWithValue("@id", idNuevo);
+                    cmd.Parameters.AddWithValue("@meses", mensual.CantidadMeses);
+                    cmd.ExecuteNonQuery();
+                }
+
+                transaccion.Commit();
+            }
+            catch
+            {
+                transaccion.Rollback();
+                throw;
+            }
+        }
+    }
 }

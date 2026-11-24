@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 public class Program
 
@@ -36,6 +36,7 @@ public class Program
             Console.WriteLine("8. Membresías vencidas");
             Console.WriteLine("9. Historial de un socio");
             Console.WriteLine("10. Reporte de ingresos mensual");
+            Console.WriteLine("11. Agregar plan");
             Console.WriteLine("0. Salir");
             Console.Write("Opción: ");
             string opcion = Console.ReadLine();
@@ -62,6 +63,8 @@ public class Program
                     VerHistorial();
                 else if (opcion == "10")
                     VerReporteIngresos();
+                else if (opcion == "11")
+                    AgregarPlan();
                 else if (opcion == "0")
                     seguir = false;
                 else
@@ -313,5 +316,56 @@ public class Program
 
         Console.WriteLine("Cantidad de ventas: " + ventas.Count);
         Console.WriteLine("TOTAL DEL MES: $" + total.ToString("N0"));
+    }
+        static void AgregarPlan()
+    {
+        Console.WriteLine("1. Plan diario");
+        Console.WriteLine("2. Plan por mes");
+        Console.Write("Tipo de plan: ");
+        string tipo = Console.ReadLine();
+
+        if (tipo != "1" && tipo != "2")
+        {
+            Console.WriteLine("Tipo no válido.");
+            return;
+        }
+
+        Console.Write("Nombre del plan: ");
+        string nombre = Console.ReadLine();
+
+        Console.Write("Precio: ");
+        decimal precio;
+        if (!decimal.TryParse(Console.ReadLine(), out precio))
+        {
+            Console.WriteLine("Precio no válido.");
+            return;
+        }
+
+        PlanLogica logica = new PlanLogica();
+
+        if (tipo == "1")
+        {
+            Console.Write("Horas de validez: ");
+            int horas;
+            if (!int.TryParse(Console.ReadLine(), out horas))
+            {
+                Console.WriteLine("Horas no válidas.");
+                return;
+            }
+            logica.AgregarDiario(usuario, nombre, precio, horas);
+        }
+        else
+        {
+            Console.Write("Cantidad de meses: ");
+            int meses;
+            if (!int.TryParse(Console.ReadLine(), out meses))
+            {
+                Console.WriteLine("Meses no válidos.");
+                return;
+            }
+            logica.AgregarPorMes(usuario, nombre, precio, meses);
+        }
+
+        Console.WriteLine("Plan agregado correctamente.");
     }
 }
