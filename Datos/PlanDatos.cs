@@ -90,4 +90,18 @@ public class PlanDatos
             }
         }
     }
+        public void Actualizar(Plan plan)
+    {
+        using (MySqlConnection conexion = new MySqlConnection(cadena))
+        {
+            conexion.Open();
+
+            string sql = "UPDATE plan SET nombre = @nombre, precio_base = @precio WHERE id_plan = @id";
+            MySqlCommand comando = new MySqlCommand(sql, conexion);
+            comando.Parameters.AddWithValue("@nombre", plan.Nombre);
+            comando.Parameters.AddWithValue("@precio", plan.PrecioBase);
+            comando.Parameters.AddWithValue("@id", plan.IdPlan);
+            comando.ExecuteNonQuery();
+        }
+    }
 }

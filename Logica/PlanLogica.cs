@@ -54,4 +54,24 @@ public class PlanLogica
         plan.CantidadMeses = meses;
         datos.Insertar(plan);
     }
+        public void Modificar(Empleado empleado, Plan plan, string nombre, decimal precio)
+    {
+        ValidarDueno(empleado);
+
+        if (string.IsNullOrWhiteSpace(nombre))
+            throw new Exception("El nombre del plan es obligatorio.");
+
+        if (precio <= 0)
+            throw new Exception("El precio debe ser mayor a 0.");
+
+        foreach (Plan p in datos.ListarTodos())
+        {
+            if (p.IdPlan != plan.IdPlan && p.Nombre.ToLower() == nombre.Trim().ToLower())
+                throw new Exception("Ya existe otro plan con ese nombre.");
+        }
+
+        plan.Nombre = nombre.Trim();
+        plan.PrecioBase = precio;
+        datos.Actualizar(plan);
+    }
 }

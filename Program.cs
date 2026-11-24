@@ -37,6 +37,7 @@ public class Program
             Console.WriteLine("9. Historial de un socio");
             Console.WriteLine("10. Reporte de ingresos mensual");
             Console.WriteLine("11. Agregar plan");
+            Console.WriteLine("12. Modificar plan");
             Console.WriteLine("0. Salir");
             Console.Write("Opción: ");
             string opcion = Console.ReadLine();
@@ -65,6 +66,8 @@ public class Program
                     VerReporteIngresos();
                 else if (opcion == "11")
                     AgregarPlan();
+                else if (opcion == "12")
+                    ModificarPlan();
                 else if (opcion == "0")
                     seguir = false;
                 else
@@ -367,5 +370,38 @@ public class Program
         }
 
         Console.WriteLine("Plan agregado correctamente.");
+    }
+        static void ModificarPlan()
+    {
+        PlanLogica logica = new PlanLogica();
+        List<Plan> planes = logica.Listar();
+
+        for (int i = 0; i < planes.Count; i++)
+        {
+            Console.WriteLine((i + 1) + ". " + planes[i].Nombre + " - $" + planes[i].PrecioBase.ToString("N0"));
+        }
+
+        Console.Write("Número del plan a modificar: ");
+        int numero;
+        if (!int.TryParse(Console.ReadLine(), out numero) || numero < 1 || numero > planes.Count)
+        {
+            Console.WriteLine("Plan no válido.");
+            return;
+        }
+        Plan plan = planes[numero - 1];
+
+        Console.Write("Nuevo nombre: ");
+        string nombre = Console.ReadLine();
+
+        Console.Write("Nuevo precio: ");
+        decimal precio;
+        if (!decimal.TryParse(Console.ReadLine(), out precio))
+        {
+            Console.WriteLine("Precio no válido.");
+            return;
+        }
+
+        logica.Modificar(usuario, plan, nombre, precio);
+        Console.WriteLine("Plan modificado correctamente.");
     }
 }
