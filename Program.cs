@@ -2,10 +2,10 @@
 
 public class Program
 
-{
+{   // Guarda al empleado que inició sesión. Está fuera del Main para que todos los métodos puedan usarlo, por ejemplo para saber quién hizo cada venta o si es el dueño.
     static Empleado usuario;
     static void Main(string[] args)
-    {
+    {   // Inicio de sesión: repite la petición del RUT mientras no haya un empleado válido. Si el RUT no existe o el empleado está inactivo, la Lógica lanza un error, el catch lo muestra y se vuelve a pedir.
          while (usuario == null)
         {
             Console.Write("RUT del empleado: ");
@@ -45,7 +45,7 @@ public class Program
             Console.WriteLine("0. Salir");
             Console.Write("Opción: ");
             string opcion = Console.ReadLine();
-
+        // Todo lo que ejecuta una opción está dentro de try/catch: si algo falla, el programa no se cierra, solo muestra el error y vuelve a mostrar el menú.
             try
             {
                 if (opcion == "1")
@@ -91,7 +91,7 @@ public class Program
             }
         }
     }
-
+    // Cada método static de Program atiende una opción del menú: pide los datos, se los entrega a la capa de Lógica y muestra el resultado.
     static void AgregarSocio()
     {
         Console.Write("RUT: ");
@@ -150,7 +150,7 @@ public class Program
         foreach (Plan p in planes)
         {
             Console.WriteLine(p.Nombre + " | $" + p.PrecioBase.ToString("N0") +
-                              " | termina: " + p.CalcularTermino(DateTime.Now).ToString("dd/MM/yyyy"));
+                              " | termina: " + p.CalcularTermino(DateTime.Now).ToString("dd/MM/yyyy"));// POLIMORFISMO: la lista mezcla planes diarios y por mes. El mismo método da una fecha distinta según el tipo real de cada plan.
         }
     }
         static void VenderMembresia()
@@ -211,6 +211,7 @@ public class Program
         }
 
         MembresiaLogica membresiaLogica = new MembresiaLogica();
+        // usuario es el empleado que inició sesión: así la venta queda asociada a quien la hizo.
         membresiaLogica.Vender(socio, plan, usuario, metodo);
         Console.WriteLine("Venta registrada correctamente.");
     }
@@ -289,7 +290,7 @@ public class Program
         }
     }
     static void VerReporteIngresos()
-    {
+    {   // Control por rol: si el usuario no es el dueño, la operación se rechaza. El dueño hereda todo lo del empleado y además puede usar las opciones 10, 11 y 12.
         if (!usuario.EsDueno)
         {
             Console.WriteLine("Esta opción es solo para el dueño.");
