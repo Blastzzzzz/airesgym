@@ -14,7 +14,7 @@ USE airesgymdb;
 CREATE TABLE socio (
     id_socio       INT AUTO_INCREMENT PRIMARY KEY,
     rut            VARCHAR(12)  NOT NULL UNIQUE,
-    nombre         VARCHAR(100) NOT NULL,
+    nombre         VARCHAR(100) NOT NULL,pwd
     telefono       VARCHAR(20)  NOT NULL,
     estado         VARCHAR(20)  NOT NULL DEFAULT 'Activo',
     fecha_registro DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,

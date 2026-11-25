@@ -60,6 +60,11 @@ public class Empleado
     public string Telefono { get; set; }
     public bool EsDueno { get; set; }
     public bool Activo { get; set; }
+
+    public void CambiarEstado()
+    {
+        Activo = !Activo;
+    }
 }public class Membresia
 {
     public int IdMembresia { get; set; }

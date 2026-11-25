@@ -38,6 +38,10 @@ public class Program
             Console.WriteLine("10. Reporte de ingresos mensual");
             Console.WriteLine("11. Agregar plan");
             Console.WriteLine("12. Modificar plan");
+            Console.WriteLine("13. Listar empleados");
+            Console.WriteLine("14. Agregar empleado");
+            Console.WriteLine("15. Modificar empleado");
+            Console.WriteLine("16. Cambiar estado de un empleado");
             Console.WriteLine("0. Salir");
             Console.Write("Opción: ");
             string opcion = Console.ReadLine();
@@ -68,6 +72,14 @@ public class Program
                     AgregarPlan();
                 else if (opcion == "12")
                     ModificarPlan();
+                else if (opcion == "13")
+                    ListarEmpleados();
+                else if (opcion == "14")
+                    AgregarEmpleado();
+                else if (opcion == "15")
+                    ModificarEmpleado();
+                else if (opcion == "16")
+                    CambiarEstadoEmpleado();
                 else if (opcion == "0")
                     seguir = false;
                 else
@@ -403,5 +415,78 @@ public class Program
 
         logica.Modificar(usuario, plan, nombre, precio);
         Console.WriteLine("Plan modificado correctamente.");
+    }
+    static void ListarEmpleados()
+    {
+        EmpleadoLogica logica = new EmpleadoLogica();
+        List<Empleado> empleados = logica.Listar(usuario);
+
+        foreach (Empleado e in empleados)
+        {
+            string cargo;
+            if (e.EsDueno)
+                cargo = "Dueño";
+            else
+                cargo = "Empleado";
+
+            string estado;
+            if (e.Activo)
+                estado = "Activo";
+            else
+                estado = "Inactivo";
+
+            Console.WriteLine(e.Rut + " | " + e.Nombre + " | " + e.Telefono + " | " + cargo + " | " + estado);
+        }
+    }
+
+    static void AgregarEmpleado()
+    {
+        EmpleadoLogica logica = new EmpleadoLogica();
+        logica.ValidarDueno(usuario);
+
+        Console.Write("RUT: ");
+        string rut = Console.ReadLine();
+        Console.Write("Nombre: ");
+        string nombre = Console.ReadLine();
+        Console.Write("Teléfono: ");
+        string telefono = Console.ReadLine();
+
+        logica.Agregar(usuario, rut, nombre, telefono);
+        Console.WriteLine("Empleado agregado correctamente.");
+    }
+
+    static void ModificarEmpleado()
+    {
+        EmpleadoLogica logica = new EmpleadoLogica();
+        logica.ValidarDueno(usuario);
+
+        Console.Write("RUT del empleado a modificar: ");
+        string rut = Console.ReadLine();
+        Console.Write("Nuevo nombre: ");
+        string nombre = Console.ReadLine();
+        Console.Write("Nuevo teléfono: ");
+        string telefono = Console.ReadLine();
+
+        logica.Modificar(usuario, rut, nombre, telefono);
+        Console.WriteLine("Empleado modificado correctamente.");
+    }
+
+    static void CambiarEstadoEmpleado()
+    {
+        EmpleadoLogica logica = new EmpleadoLogica();
+        logica.ValidarDueno(usuario);
+
+        Console.Write("RUT del empleado: ");
+        string rut = Console.ReadLine();
+
+        Empleado empleado = logica.CambiarEstado(usuario, rut);
+
+        string estado;
+        if (empleado.Activo)
+            estado = "Activo";
+        else
+            estado = "Inactivo";
+
+        Console.WriteLine("El estado de " + empleado.Nombre + " ahora es: " + estado);
     }
 }
